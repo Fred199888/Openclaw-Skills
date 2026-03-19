@@ -1,0 +1,51 @@
+{
+  "skill": "xhs-kol-crawl-all",
+  "trigger_format": "xhs-kol <关键词>" ,
+  "table": {
+    "name_from_keyword": false,
+    "fixed_app_token": "VyT3b5aKRa9WgpsUlQdcKCgQnbd",
+    "fixed_table_id": "tbl1Y0FeR38G5Z8i",
+    "fixed_table_name": "KOL",
+    "default_permission": {
+      "share_entity": "same_tenant",
+      "link_share_entity": "tenant_editable",
+      "security_entity": "anyone_can_edit",
+      "comment_entity": "anyone_can_edit",
+      "external_access": false,
+      "invite_external": false
+    },
+    "columns_order": [
+      "KOL",
+      "关键词",
+      "修改时间",
+      "KolID",
+      "近期笔记",
+      "粉丝数",
+      "阅读中位数（日常）",
+      "互动中位数（日常）",
+      "全部报价",
+      "微信号",
+      "小红书号",
+      "地区",
+      "内容方向",
+      "人设标签"
+    ],
+    "field_mapping_by_name": true,
+    "default_values": {
+      "进度": "无操作"
+    }
+  },
+  "crawl": {
+    "scope": "best_effort_all",
+    "dedupe_keys": ["KOL", "小红书号", "微信号"],
+    "retry": 2,
+    "note_detail_concurrency": 30,
+    "feishu_write_concurrency": 30,
+    "global_concurrency": 30
+  },
+  "sync": {
+    "daily_enabled": false,
+    "cron": "0 9 * * *",
+    "note": "预留；后续开启每日同步时只需改 daily_enabled=true 并接入 cron。"
+  }
+}
