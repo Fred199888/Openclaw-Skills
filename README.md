@@ -1,6 +1,6 @@
 # Openclaw Skills
 
-Openclaw 团队的 Claude Code Skills 集合。包含 KOL 运营、内容创作、线上修复、微信工具等多个自动化技能。
+Openclaw 团队的 Claude Code Skills 集合 — KOL 运营（小红书 + 巨量星图）、微信工具。
 
 ## 快速迁移到新机器
 
@@ -10,6 +10,7 @@ git clone git@github.com:Fred199888/Openclaw-Skills.git
 cd Openclaw-Skills
 
 # 2. 复制 skills 到 Claude Code 目录
+mkdir -p ~/.claude/skills
 cp -r .claude/skills/* ~/.claude/skills/
 
 # 3. 复制全局环境变量模板并填写
@@ -36,29 +37,6 @@ done
 | `xingtu-invite-batch` | 批量发送巨量星图 KOL 邀约，回写进度 | 全局 + 本地 |
 | `kol-to-video-sync` | 将 KOL 总表有效记录同步到视频渠道建设表 | 本地 |
 | `kol-progress-to-video-sync` | 将活动 BD 表进度沉淀到视频渠道建设表 | 本地 |
-| `xhs-ba` | 小红书博主分析 + 夸赞话术生成器 | 无 |
-| `xhs-mbti-trending` | 抓取小红书近一周 MBTI 热帖 Top 50 | 无 |
-
-### 内容创作（文章转视频）
-
-| 技能 | 用途 | 需要 .env |
-|------|------|-----------|
-| `article-to-video` | 全流程编排：文章 → 解说词 → 语音 → 幻灯片 → 视频 | 系统环境变量 |
-| `article-fetch` | 抓取网页文章完整内容和关键图片 | 无 |
-| `narration-gen` | 将文章生成中文视频解说词脚本 | 无 |
-| `tts-gen` | 火山引擎 TTS 生成分段 MP3 音频 | 系统环境变量 |
-| `video-assemble` | PPT 幻灯片 + 音频合成 MP4 视频 | 无 |
-
-### 线上修复（SecondMe Monorepo）
-
-| 技能 | 用途 | 需要 .env |
-|------|------|-----------|
-| `bug-fix` | 硅谷 prod 告警批量自动修复工作流 | 独立 .env 体系 |
-| `worker-fix-java` | 单条 issue 闭环修复（CLS → 诊断 → 修复 → PR） | 无 |
-| `cls-log-query` | 腾讯云 CLS 日志查询 | 无 |
-| `env-check-multi-repo` | SecondMe monorepo 环境检查 | 无 |
-| `fof` | 通用需求开发流程（worktree + 分支 + 实现 + PR） | 无 |
-| `github-pr-create` | 生成 GitHub PR 创建链接 | 无 |
 
 ### 微信工具
 
@@ -67,22 +45,11 @@ done
 | `vx-secret` | macOS 微信聊天记录提取与查询（进程内存密钥提取） | 运行时生成 keys.json |
 | `vx-digest` | 微信群消息消费 + 飞书报表 | 本地 |
 
-### 通用工具
-
-| 技能 | 用途 |
-|------|------|
-| `metaskill` | 创建 AI agent 团队、个体 agent 或自定义 skill |
-| `metabot` | MetaBot API 协作：委派任务、调度、管理 |
-| `metamemory` | 跨会话共享记忆读写 |
-| `skill-creator` | 创建新 skill 的引导工具 |
-| `knowledge-graph-fred` | 功能知识图谱 |
-| `linear-dev-fred` | Linear 任务驱动开发 |
-
 ## 环境变量配置
 
 ### 全局认证：`~/.claude/skills/xhs-global.env`
 
-这是最重要的配置文件，所有 KOL 运营类 skill 共享。
+所有 KOL 运营类 skill 共享的认证文件。
 
 ```bash
 cp ~/.claude/skills/xhs-global.env.example ~/.claude/skills/xhs-global.env
@@ -119,44 +86,27 @@ cp ~/.claude/skills/xhs-global.env.example ~/.claude/skills/xhs-global.env
 
 > **飞书多维表格 ID 获取方式**：打开飞书多维表格 URL，格式为 `https://xxx.feishu.cn/base/{app_token}?table={table_id}`
 
-### 文章转视频：系统环境变量
-
-TTS 功能需要火山引擎凭据，建议加到 shell profile 中：
-
-```bash
-# ~/.zshrc 或 ~/.bashrc
-export VOLCANO_APPID="你的火山引擎 App ID"   # 火山引擎控制台 → 语音技术 → 应用管理
-export VOLCANO_TOKEN="你的火山引擎 Token"     # 同上，获取 Access Token
-```
-
-### 线上修复：独立配置体系
-
-`bug-fix` 和 `worker-fix-java` 使用独立的 `.env` 体系（位于 `~/Desktop/workspace/claude-code-deploy/scripts/.env`），包含 monorepo 路径、CLS Region、飞书群/表 ID 等。详见 `bug-fix/SKILL.md` 中的说明。
-
 ## 系统依赖
 
 ```bash
-# Python 依赖（内容创作类 skill）
-pip install requests pydub Pillow
+pip install requests
 
-# 系统工具
-brew install ffmpeg    # 视频合成
-
-# 微信工具（仅 macOS）
-# vx-secret 需要 WeChat 4.x 运行中
+# 微信工具（仅 macOS，需要 WeChat 4.x 运行中）
 ```
 
 ## 目录结构
 
 ```
 .claude/skills/
-├── xhs-global.env.example     # 全局认证模板（复制为 xhs-global.env 后填值）
-├── article-fetch/              # 网页文章抓取
-├── article-to-video/           # 文章转视频编排器
-├── bug-fix/                    # 线上告警批量修复
-├── cls-log-query/              # CLS 日志查询
-├── ...
-└── xingtu-kol-crawl-all/       # 星图 KOL 抓取
+├── xhs-global.env.example          # 全局认证模板
+├── xhs-kol-crawl-all/              # 小红书 KOL 抓取
+├── xhs-invite-batch/               # 小红书 KOL 邀约
+├── xingtu-kol-crawl-all/           # 星图 KOL 抓取
+├── xingtu-invite-batch/            # 星图 KOL 邀约
+├── kol-to-video-sync/              # KOL → 视频表同步
+├── kol-progress-to-video-sync/     # 活动进度 → 视频表同步
+├── vx-secret/                      # 微信聊天记录提取
+└── vx-digest/                      # 微信群消息消费
 ```
 
 每个 skill 目录包含：
